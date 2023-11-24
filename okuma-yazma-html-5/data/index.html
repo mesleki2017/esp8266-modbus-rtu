@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <style>
+    .wrapper {
+ font-size: 30px;
+      
+    }
+.gallery {
+	display: flex;
+	flex-wrap: wrap;
+	/* Compensate for excess margin on outer gallery flex items */
+	margin: -1rem -1rem;
+	/*align-items: center; /* Vertical center alignment */
+	justify-content: center; /* Horizontal center alignment */
+	
+}
+
+.gallery-item {
+	/* Minimum width of 24rem and grow to fit available space */
+	flex: 1 0 24rem;
+	/* Margin value should be half of grid-gap value as margins on flex items don't collapse */
+	margin: 1rem;
+	box-shadow: 0.6rem 0.9rem 0.9rem rgba(0, 0, 0, 0.4);
+	overflow: hidden;
+	border: 5px solid #CCC;
+	vertical-align:middle;
+	text-align:center;
+}
+
+  </style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <div class="three" style="background-color:black"; >
+    <p style="font-size: 30px;background-color:blue">L1- N = <span id="rd">a---</span></p>
+    <p style="font-size: 30px;background-color:yellow">L2-N = <span id="rd2">b---</span></p>
+	<p style="font-size: 30px;background-color:red">L3-N = <span id="rd3">c---</span></p>
+  </div>
+  
+  	<div class="one" style="background-color:yellow">
+		<input style="font-size: 60px;" id="button2" onclick=change(); type="button" value="data gonder"></input>
+	</div>
+	 <div id="gallery1" class="gallery" >
+		------------------
+	</div>
+
+</div>
+</body>
+</html>
+
+<script>
+var Socket;
+    var sayi1;
+    sayi1 = 333;
+    var sayi2;
+    sayi2 = 0;
+
+    function init() {
+        Socket = new WebSocket("ws://" + window.location.hostname + ":81/");
+        Socket.onmessage = function(event) {
+            processReceivedCommand(event);
+        };
+    }
+    window.onload = function(e) {
+        init();
+    };
+
+    
+   function processReceivedCommand(evt) {
+        var str1 = evt.data;
+        str11 = str1.split(",");
+
+        var  aa = document.getElementById("gallery1");
+        aa.innerHTML = loadTableData(str11);
+        
+        document.getElementById("rd").innerHTML = str11[0];
+        document.getElementById("rd2").innerHTML = str11[1];
+        document.getElementById("rd3").innerHTML = str11[2];
+        //sayi1 = sayi1 + 1;
+        //sendText(sayi1);
+        return parseInt(evt.data);
+    }
+        function sendText(data) {
+        Socket.send(data);
+    }
+        function change() //2.tarz
+    {
+        //sayi1 = sayi1 + 1;
+        sendText(sayi1);
+    };
+    
+  function loadTableData(mystring_list) {
+
+	var txtson="";
+
+    for(var i = 1, size = mystring_list.length; i < size ; i=i+2){
+	   var item1 = mystring_list[i];
+	   var item2 = mystring_list[i+1];
+	   var item3 = InttoFloat(item1, item2);
+		var txt4='<span class="gallery-item"  ';  
+		var txt5=" id=ff"+i;
+		var txt6=' >';
+		var txt7=item1+","+item2+"=\n"+item3;
+		var txt8=' </span>';
+		var txt9=txt4+txt5+txt6+txt7+txt8
+		txtson=txtson+txt9
+					}
+
+	return txtson
+   };
+
+// c++ taki kodun javascript hali. daha henüz yukarı adapte etmedim.   
+function InttoFloat(Data0, Data1) {
+  let x;
+  let p = new Uint32Array(1); // Using Uint32Array to handle the binary representation of float
+  p[0] = (Data0 << 16) | Data1; // Big-endian
+  x = new Float32Array(p.buffer)[0];
+  if (Data0!=0)
+  {return x;}
+  else{return Data1}
+  
+}
+// Example usage:
+let result = InttoFloat(17252,18088);// voltaj registerindan okunan degerleri voltaj formatina çevirmek icin
+console.log(result);
+
+</script>
+

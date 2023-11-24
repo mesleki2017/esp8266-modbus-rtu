@@ -191,5 +191,19 @@ If it suitable to lock execution till responce or timeout you can write:
     yield();
   }
 '''
+# https://www.arduino.cc/reference/en/language/functions/communication/serial/begin/
+    Serial: serial port object. See the list of available serial ports for each board on the Serial main page.
+    speed: in bits per second (baud). Allowed data types: long.
+    config: sets data, parity, and stop bits. Valid values are:
+    SWSERIAL_5N1
+    SWSERIAL_6N1
+    SWSERIAL_7N1
+    SWSERIAL_8N1 (the default)
+    SWSERIAL_5N2
+.... gibi sanki
+
+S.begin(38400, SWSERIAL_8N1); kodundaki SWSERIAL_8N1 anlami
+
+
 
 
