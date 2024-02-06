@@ -81,23 +81,28 @@ int tarama_no=0;
 void loop() {
   
    if (!mb.slave()) {
-    int my_register=300;
-    uint16_t regs11[1];//4002 ye role on komutu
+    error_code=9999;
+    //int my_register=940;//error code register
+    int my_register=7;//UINT This is the base signal. This signal shows the rotational speed of the pump.
+    
+    uint16_t regs11[2];//where to read
     int regs11_size=sizeof(regs11)/sizeof(uint16_t);
-    mb.readHreg(3, my_register, regs11,regs11_size, cbWrite);// enerji analizorunde sadece holding register okumustum
-    //mb.readIreg(cihaz_id,my_register, Mread0,my_array_size, cbWrite);// wilo pompa da is ,nput registerda okudum
+    
+    //mb.readHreg(3, my_register, regs11,regs11_size, cbWrite);// enerji analizorunde sadece holding register okumustum
+    mb.readIreg(cihaz_id,my_register, regs11,regs11_size,cbWrite);// wilo pompa da is ,nput registerda okudum
     
     while (mb.slave()) {
            mb.task();
            delay(100);
         };
     Serial.println("------------------------------------------------");
-    Serial.print("error_code");Serial.println(error_code);
+    Serial.print("read error_code-> ");Serial.println(error_code);
     
      delay(100);
  
-    String mytext1=String(data_to_string(String(my_register)+"--",Mread0,my_array_size));
+    String mytext1=String(data_to_string("reading "+String(my_register)+" adres--",regs11,regs11_size));
     Serial.println(mytext1);
+    Serial.print("*-*-*-*-*");Serial.println(*(uint16_t*)&regs11);
     
 
   };
@@ -105,23 +110,24 @@ void loop() {
   delay(1000);
 
    if (!mb.slave()) {
-    uint16_t regs22[2] = {4,3};//4002 ye role on komutu
+    Serial.println("1write------------------------------");
+    Serial.println("--");
+    error_code=9999;
+    uint16_t regs22[1] = {20};//4002 y1 role on komutu
     int regs22_size=sizeof(regs22)/sizeof(uint16_t);
-    mb.writeHreg(3,300, (uint16_t*)&regs22, regs22_size, cbWrite);
+    mb.writeHreg(3,1, (uint16_t*)&regs22, regs22_size, cbWrite);
     
-    Serial.println(*(uint16_t*)&regs22);Serial.println(*(uint16_t*)&regs22);
-    
-
-   
-    
-    
+    //Serial.println(*(uint16_t*)&regs22);Serial.println(*(uint16_t*)&regs22);
     while (mb.slave()) {
            mb.task();
            delay(1);
         }
-    Serial.println("ghg-----------------");
+    Serial.print("write error_code-> ");Serial.println(error_code);
+    Serial.println("--");   
+    Serial.println("2write---------------------------------");
   };
    delay(1000);
+   
   yield();
   
 
